@@ -444,6 +444,43 @@ npm run dev -- --host 127.0.0.1 --port 5173
 
 ---
 
+## 🚀 Deploying to Vercel
+
+EvacuSafe is pre-configured for instant **Full-Stack deployment on Vercel** using a unified monorepo configuration:
+- **Frontend:** Built via Vite + TypeScript, served as an ultra-fast edge static SPA.
+- **Backend:** Packaged into a serverless Python runtime (`api/index.py`), handling all `/api/*` endpoints with FastAPI.
+- **Database:** Auto-provisions and seeds the Greenfield City demonstration database in `/tmp/evacusafe.db` on cold starts, or seamlessly connects to PostgreSQL when `DATABASE_URL` is set.
+
+### Option A: Via GitHub (Recommended)
+1. Push your repository to GitHub:
+   ```bash
+   git add .
+   git commit -m "Configure Vercel serverless deployment"
+   git push origin main
+   ```
+2. Go to [vercel.com/new](https://vercel.com/new) and log in.
+3. Import your **`Suraksha`** repository.
+4. Keep the **Root Directory** as `./` (the root).
+5. Vercel automatically detects [vercel.json](file:///d:/disaster%20management%27/vercel.json) — **no build adjustments or overrides needed!**
+6. Click **Deploy**.
+
+### Option B: Via Vercel CLI
+```bash
+# In the project root:
+npx vercel
+
+# For production deployment:
+npx vercel --prod
+```
+
+### Optional Environment Variables:
+| Variable | Description | Default |
+|:---|:---|:---|
+| `DATABASE_URL` | PostgreSQL connection string (Supabase / Neon / Render) | Uses local `/tmp/evacusafe.db` |
+| `VITE_API_BASE_URL` | Override API URL if backend is hosted separately | `/api` |
+
+---
+
 ## 🧪 Testing & Validation
 
 The codebase includes comprehensive unit, integration, and end-to-end verification suites:

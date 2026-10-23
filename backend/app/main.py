@@ -16,18 +16,25 @@ from .api import (
     ai
 )
 
+# Ensure tables and seed data are created on cold start
+try:
+    Base.metadata.create_all(bind=engine)
+    seed_database(force=False)
+except Exception as e:
+    print(f"Cold start init notice: {e}")
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Ensure tables created and demo data seeded
     Base.metadata.create_all(bind=engine)
     seed_database(force=False)
     yield
-    # Shutdown logic if any
 
 app = FastAPI(
     title="EvacuSafe — Intelligent Disaster Evacuation Planning API",
     description="Software-only agent-based disaster evacuation simulation and route optimization engine.",
     version="1.0.0",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
     lifespan=lifespan
 )
 
@@ -48,7 +55,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health endpoint
+# API Root & Health endpoints
+@app.get("/api")
+def api_root():
+    return {
+        "status": "online",
+        "service": "EvacuSafe Engine API",
+        "version": "1.0.0",
+        "docs": "/api/docs",
+        "health": "/api/health"
+    }
+
 @app.get("/api/health")
 def health_check():
     return {
